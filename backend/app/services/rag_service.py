@@ -15,6 +15,12 @@ class RAGService:
         
         # 2. 관련 전략 Chunk 검색 (Top-k)
         docs = self.vector_db.similarity_search(question, k=3, filter=filter_criteria)
+        if not docs:
+            return StrategyResponse(
+                summary="관련 전략을 찾을  수 없습니다.",
+                detail="현재 패치에 대한 데이터가 없습니다. 영상을 먼저 수집해주세요.",
+                sources=[]
+            )
         context_text = "\n\n".join([d.page_content for d in docs])
         source_ids = list(set([d.metadata.get('video_id') for d in docs]))
 
